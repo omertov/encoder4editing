@@ -10,7 +10,7 @@
 </p>
 
 ## Description   
-Official Implementation of "Designing an Encoder for StyleGAN Image Manipulation" paper for both training and evaluation. 
+Official Implementation of "<a href="https://arxiv.org/abs/2102.02766">Designing an Encoder for StyleGAN Image Manipulation</a>" paper for both training and evaluation. 
 The e4e encoder is specifically designed to complement existing image manipulation techniques performed over StyleGAN's latent space.
 
 ## Getting Started
