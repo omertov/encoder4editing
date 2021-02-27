@@ -4,14 +4,17 @@ import torch
 import numpy as np
 import sys
 import os
+import dlib
 
 sys.path.append(".")
 sys.path.append("..")
-from configs import data_configs
-from datasets.images_dataset import ImagesDataset
+
+from configs import data_configs, paths_config
+from datasets.inference_dataset import InferenceDataset
 from torch.utils.data import DataLoader
 from models.psp import pSp
 from utils.common import tensor2im
+from utils.alignment import align_face
 from PIL import Image
 
 
@@ -20,7 +23,7 @@ def main(args):
     is_cars = 'car' in opts.dataset_type
     generator = net.decoder
     generator.eval()
-    data_loader = setup_data_loader(args, opts)
+    args, data_loader = setup_data_loader(args, opts)
 
     # Check if latents exist
     latents_file_path = os.path.join(args.save_dir, 'latents.pt')
@@ -60,11 +63,14 @@ def setup_data_loader(args, opts):
     dataset_args = data_configs.DATASETS[opts.dataset_type]
     transforms_dict = dataset_args['transforms'](opts).get_transforms()
     images_path = args.images_dir if args.images_dir is not None else dataset_args['test_source_root']
-    test_dataset = ImagesDataset(source_root=images_path,
-                                 target_root=images_path,
-                                 source_transform=transforms_dict['transform_source'],
-                                 target_transform=transforms_dict['transform_test'],
-                                 opts=opts)
+    print(f"images path: {images_path}")
+    align_function = None
+    if args.align:
+        align_function = run_alignment
+    test_dataset = InferenceDataset(root=images_path,
+                                    transform=transforms_dict['transform_test'],
+                                    preprocess=align_function,
+                                    opts=opts)
 
     data_loader = DataLoader(test_dataset,
                              batch_size=args.batch,
@@ -98,7 +104,7 @@ def get_all_latents(net, data_loader, n_images=None, is_cars=False):
         for batch in data_loader:
             if n_images is not None and i > n_images:
                 break
-            x, _ = batch
+            x = batch
             inputs = x.to(device).float()
             latents = get_latents(net, inputs, is_cars)
             all_latents.append(latents)
@@ -124,6 +130,13 @@ def generate_inversions(args, g, latent_codes, is_cars):
         save_image(imgs[0], inversions_directory_path, i + 1)
 
 
+def run_alignment(image_path):
+    predictor = dlib.shape_predictor(paths_config.model_paths['shape_predictor'])
+    aligned_image = align_face(filepath=image_path, predictor=predictor)
+    print("Aligned image has shape: {}".format(aligned_image.size))
+    return aligned_image
+
+
 if __name__ == "__main__":
     device = "cuda"
 
@@ -135,6 +148,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch", type=int, default=1, help="batch size for the generator")
     parser.add_argument("--n_sample", type=int, default=None, help="number of the samples to infer.")
     parser.add_argument("--latents_only", action="store_true", help="infer only the latent codes of the directory")
+    parser.add_argument("--align", action="store_true", help="align face images before inference")
     parser.add_argument("ckpt", metavar="CHECKPOINT", help="path to generator checkpoint")
 
     args = parser.parse_args()
