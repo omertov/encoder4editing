@@ -104,6 +104,8 @@ class Coach:
 
     def train(self):
         self.net.train()
+        if self.opts.progressive_steps:
+            self.check_for_progressive_training_update()
         while self.global_step < self.opts.max_steps:
             for batch_idx, batch in enumerate(self.train_dataloader):
                 loss_dict = {}
@@ -249,11 +251,11 @@ class Coach:
             deltas_latent_dims = self.net.encoder.get_deltas_starting_dimensions()
 
             first_w = latent[:, 0, :]
-            for i in range(1, self.net.encoder.progressive_stage.value):
+            for i in range(1, self.net.encoder.progressive_stage.value + 1):
                 curr_dim = deltas_latent_dims[i]
                 delta = latent[:, curr_dim, :] - first_w
                 delta_loss = torch.norm(delta, self.opts.delta_norm, dim=1).mean()
-                loss_dict[f"delta{i+1}_loss"] = float(delta_loss)
+                loss_dict[f"delta{i}_loss"] = float(delta_loss)
                 total_delta_loss += delta_loss
             loss_dict['total_delta_loss'] = float(total_delta_loss)
             loss += self.opts.delta_norm_lambda * total_delta_loss
