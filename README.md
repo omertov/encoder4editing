@@ -74,6 +74,31 @@ python scripts/train.py \
 --test_workers 4 
 ```
 
+#### Training on your own dataset
+In order to train the e4e encoder on a custom dataset, perform the following adjustments:
+1. Insert the paths to your train and test data into the `dataset_paths` variable defined in `configs/paths_config.py`:
+```
+dataset_paths = {
+    'my_train_data': '/path/to/train/images/directory',
+    'my_test_data': '/path/to/test/images/directory'
+}
+```
+2. Configure a new dataset under the DATASETS variable defined in `configs/data_configs.py`:
+```
+DATASETS = {
+   'my_data_encode': {
+        'transforms': transforms_config.EncodeTransforms,
+        'train_source_root': dataset_paths['my_train_data'],
+        'train_target_root': dataset_paths['my_train_data'],
+        'test_source_root': dataset_paths['my_test_data'],
+        'test_target_root': dataset_paths['my_test_data']
+    }
+}
+```
+Refer to `configs/transforms_config.py` for the transformations applied to the train and test images during training. 
+
+3. Finally, run a training session with `--dataset_type my_data_encode`.
+
 ## Inference
 Having trained your model, you can use `scripts/inference.py` to apply the model on a set of images.   
 For example, 
