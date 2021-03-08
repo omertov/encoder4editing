@@ -12,14 +12,14 @@ sys.path.append("..")
 from configs import data_configs, paths_config
 from datasets.inference_dataset import InferenceDataset
 from torch.utils.data import DataLoader
-from models.psp import pSp
+from utils.model_utils import setup_model
 from utils.common import tensor2im
 from utils.alignment import align_face
 from PIL import Image
 
 
 def main(args):
-    net, opts = setup_model(args)
+    net, opts = setup_model(args.ckpt, device)
     is_cars = 'car' in opts.dataset_type
     generator = net.decoder
     generator.eval()
@@ -35,28 +35,6 @@ def main(args):
 
     if not args.latents_only:
         generate_inversions(args, generator, latent_codes, is_cars=is_cars)
-
-
-def setup_model(args):
-    ckpt = torch.load(args.ckpt, map_location='cpu')
-    opts = ckpt['opts']
-
-    is_cars = 'car' in opts['dataset_type']
-    is_faces = 'ffhq' in opts['dataset_type']
-    if is_faces:
-        opts['stylegan_size'] = 1024
-    elif is_cars:
-        opts['stylegan_size'] = 512
-    else:
-        opts['stylegan_size'] = 256
-
-    opts['checkpoint_path'] = args.ckpt
-    opts = argparse.Namespace(**opts)
-
-    net = pSp(opts)
-    net.eval()
-    net = net.to(device)
-    return net, opts
 
 
 def setup_data_loader(args, opts):
