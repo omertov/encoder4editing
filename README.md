@@ -109,6 +109,20 @@ python scripts/inference.py \
 path/to/checkpoint.pt 
 ```
 
+## Latent Editing Consistency (LEC)
+As described in the paper, we suggest a new metric, Latent Editing Consistency (LEC), for evaluating the encoder's 
+performance.
+We provide an example for calculating the metric over the FFHQ StyleGAN using the aging editing direction in 
+`metrics/LEC.py`.     
+
+To run the example: 
+```
+cd metrics
+python LEC.py \
+--images_dir=/path/to/images/directory \
+path/to/checkpoint.pt 
+```
+
 ## Acknowledgments
 This code borrows heavily from [pixel2style2pixel](https://github.com/eladrich/pixel2style2pixel)
 
