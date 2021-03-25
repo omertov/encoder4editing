@@ -13,6 +13,9 @@
 Official Implementation of "<a href="https://arxiv.org/abs/2102.02766">Designing an Encoder for StyleGAN Image Manipulation</a>" paper for both training and evaluation. 
 The e4e encoder is specifically designed to complement existing image manipulation techniques performed over StyleGAN's latent space.
 
+## Recent Updates
+`2021.03.25`: Add pose editing direction. (Thanks to <a href='https://yotamnitzan.github.io/'>Yotam Nitzan</a>).
+
 ## Getting Started
 ### Prerequisites
 - Linux or macOS
