@@ -17,6 +17,7 @@ def setup_model(checkpoint_path, device='cuda'):
         opts['stylegan_size'] = 256
 
     opts['checkpoint_path'] = checkpoint_path
+    opts['device'] = device
     opts = argparse.Namespace(**opts)
 
     net = pSp(opts)
