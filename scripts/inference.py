@@ -20,7 +20,7 @@ from PIL import Image
 
 def main(args):
     net, opts = setup_model(args.ckpt, device)
-    is_cars = 'car' in opts.dataset_type
+    is_cars = 'cars_' in opts.dataset_type
     generator = net.decoder
     generator.eval()
     args, data_loader = setup_data_loader(args, opts)
