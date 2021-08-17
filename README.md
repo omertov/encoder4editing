@@ -1,4 +1,4 @@
-# Designing an Encoder for StyleGAN Image Manipulation
+# Designing an Encoder for StyleGAN Image Manipulation (SIGGRAPH 2021)
   <a href="https://arxiv.org/abs/2102.02766"><img src="https://img.shields.io/badge/arXiv-2008.00951-b31b1b.svg"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](http://colab.research.google.com/github/omertov/encoder4editing/blob/main/notebooks/inference_playground.ipynb)
@@ -14,6 +14,7 @@ Official Implementation of "<a href="https://arxiv.org/abs/2102.02766">Designing
 The e4e encoder is specifically designed to complement existing image manipulation techniques performed over StyleGAN's latent space.
 
 ## Recent Updates
+`2021.08.17`: Add single style code encoder (use `--encoder_type SingleStyleCodeEncoder`). <br />
 `2021.03.25`: Add pose editing direction.
 
 ## Getting Started
