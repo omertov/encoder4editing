@@ -101,7 +101,7 @@ def generate_inversions(args, g, latent_codes, is_cars):
     print('Saving inversion images')
     inversions_directory_path = os.path.join(args.save_dir, 'inversions')
     os.makedirs(inversions_directory_path, exist_ok=True)
-    for i in range(args.n_sample):
+    for i in range(min(args.n_sample, len(latents))):
         imgs, _ = g([latent_codes[i].unsqueeze(0)], input_is_latent=True, randomize_noise=False, return_latents=True)
         if is_cars:
             imgs = imgs[:, :, 64:448, :]
